@@ -1,0 +1,31 @@
+plugins {
+    id 'idea'
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+apply plugin: 'org.openjfx.javafxplugin'
+
+
+group 'fr.knightmar'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+javafx {
+    version = 12
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.swing']
+}
+
+application {
+    getMainClass().set('com.github.bricklou.launchertuto.Main')
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': "fr.knightmar.connexion.Main"
+    }
+}
+
