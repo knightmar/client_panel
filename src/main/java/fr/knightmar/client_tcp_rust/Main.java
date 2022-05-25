@@ -1,15 +1,43 @@
 package fr.knightmar.client_tcp_rust;
 
-import fr.knightmar.client_tcp_rust.connexion.ConnexionManager;
-
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Scanner;
 
 class Main {
+    public Socket socket;
+    public Scanner scanner;
+
+    public Main(InetAddress serverAddress, int serverPort) throws IOException {
+        this.socket = new Socket(serverAddress, serverPort);
+        this.scanner = new Scanner(System.in);
+    }
+
+    public void start() throws IOException {
+        String input;
+        while (true) {
+            input = scanner.nextLine();
+            System.out.println(input);
+            PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
+            out.println(input);
+            out.flush();
+            if (input.equals("exit")) {
+                System.out.println("Bye bye");
+                out.println(input);
+                out.flush();
+                out.close();
+                break;
+            }
+
+        }
+    }
 
 
     public static void main(String[] args) {
+
+
         String input = "";
         Scanner scannerIP = new Scanner(System.in);
         System.out.println("Enter the IP ans the port of the server (ex: 192.168.10.63:7878): ");
@@ -42,7 +70,7 @@ class Main {
     public static void connect(String ip, int port) throws IOException {
         System.out.println("Connecting to IP: " + ip + " Port: " + port);
 
-        ConnexionManager client = new ConnexionManager(
+        Main client = new Main(
                 InetAddress.getByName(ip),
                 port);
 

@@ -20,12 +20,12 @@ javafx {
 }
 
 application {
-    getMainClass().set('com.github.bricklou.launchertuto.Main')
+    getMainClass().set('fr.knightmar.client_tcp_rust.MainGui')
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': "fr.knightmar.connexion.Main"
+        attributes 'Main-Class': "fr.knightmar.client_tcp_rust.Main"
     }
 }
 
