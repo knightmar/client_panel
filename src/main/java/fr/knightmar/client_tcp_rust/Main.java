@@ -34,10 +34,7 @@ class Main {
         }
     }
 
-
     public static void main(String[] args) {
-
-
         String input = "";
         Scanner scannerIP = new Scanner(System.in);
         System.out.println("Enter the IP ans the port of the server (ex: 192.168.10.63:7878): ");

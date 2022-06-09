@@ -28,4 +28,6 @@ jar {
         attributes 'Main-Class': "fr.knightmar.client_tcp_rust.Main"
     }
 }
-
+compileJava {
+    options.encoding = 'UTF-8'
+}
