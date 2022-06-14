@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Objects;
 
 import static javafx.geometry.Pos.CENTER;
 
@@ -67,13 +68,21 @@ public class ManageServerPane extends BorderPane {
     public static void start() throws IOException {
         Thread thread = new Thread(() -> {
             System.out.println("started");
+            String previous_line = "";
+
             while (isConnected) {
-                System.out.println("started");
                 try {
                     BufferedReader reader = ConnexionManagerInstanceSaver.getConnexionManager().getIn();
                     String line = reader.readLine();
-                    logs.setText(logs.getText() + line);
-                    System.out.println(line.trim() + "\n");
+                    if (!Objects.equals(line, previous_line)) {
+                        previous_line = line;
+                        logs.appendText(previous_line + "\n");
+                        logs.end();
+                    } else {
+                        System.out.println("nop");
+                    }
+
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
