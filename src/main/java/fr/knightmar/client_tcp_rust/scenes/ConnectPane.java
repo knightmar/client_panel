@@ -19,14 +19,18 @@ import static javafx.geometry.Pos.CENTER;
 import static javafx.geometry.Pos.TOP_CENTER;
 
 public class ConnectPane extends BorderPane {
+    ConnexionManager connexionManager;
+    ManageServerPane appPane;
 
 
     public ConnectPane(int width, int height) {
+        Thread javafx = Thread.currentThread();
         TextField ip = new TextField();
         Label title = new Label("Give the ip of the server to connect to :");
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         ip.setPromptText("IP");
+        ip.setText("192.168.57.129");
         ip.setAlignment(CENTER);
         ip.setMaxWidth(width / 3.0);
 
@@ -44,24 +48,30 @@ public class ConnectPane extends BorderPane {
                             alert.setContentText("The server is not reachable, bad ip or server is down");
                         } else {
                             System.out.println("Connecting to " + ipAddres.getHostAddress());
-                            Thread thread = new Thread(() -> {
-                                try {
-                                    ConnexionManager connexionManager = new ConnexionManager(InetAddress.getByName(ip.getText()), 7878);
-                                    setConnexionManager(connexionManager);
+                            try {
+                                connexionManager = new ConnexionManager(InetAddress.getByName(ip.getText()), 7878);
+                                appPane = new ManageServerPane(width, height);
 
-                                } catch (IOException e) {
-                                    sendAlert();
-                                }
-                            });
-                            thread.start();
 
-                            Pane appPane = new ManageServerPane(width, height);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
                             Scene appScene = new Scene(appPane, width, height);
                             MainGui.setScene(appScene);
+                            System.out.println("start");
+                            ManageServerPane.start();
+
+
                         }
 
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Network error");
+                        alert.setHeaderText("Can't connect to the server");
+                        alert.setContentText("The server is not reachable, bad ip or server is dow\ndetails : " + e.getMessage());
+                        alert.showAndWait();
                     }
                 }
 
@@ -83,9 +93,6 @@ public class ConnectPane extends BorderPane {
         setAlignment(title, TOP_CENTER);
     }
 
-    public static void setConnexionManager(ConnexionManager connexionManager) {
-        ConnexionManagerInstanceSaver.connexionManager = connexionManager;
-    }
 
     public static void sendAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -7,4 +7,9 @@ public class ConnexionManagerInstanceSaver {
     public static ConnexionManager getConnexionManager() {
         return connexionManager;
     }
+
+
+    public static void setConnexionManager(ConnexionManager connexionManager) {
+        ConnexionManagerInstanceSaver.connexionManager = connexionManager;
+    }
 }

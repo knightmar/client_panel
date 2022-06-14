@@ -1,34 +1,25 @@
 package fr.knightmar.client_tcp_rust.connexion;
 
+import fr.knightmar.client_tcp_rust.utils.ConnexionManagerInstanceSaver;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 
 public class ConnexionManager {
     public Socket socket;
-    private DataInputStream in;
-    private DataOutputStream out;
+    private final BufferedReader in;
+    private final PrintStream out;
 
     public ConnexionManager(InetAddress serverAddress, int serverPort) throws IOException {
         this.socket = new Socket(serverAddress, serverPort);
 
+        ConnexionManagerInstanceSaver.setConnexionManager(this);
+        out = new PrintStream(socket.getOutputStream());
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        System.out.println("set");
 
-        Thread thread = new Thread(() -> {
-            while (true){
-                try {
-                    out = new DataOutputStream(socket.getOutputStream());
-                    in = new DataInputStream(socket.getInputStream());
-                    if (!in.readUTF().equals("")){
-                        System.out.println(in.readUTF());
-                    }
 
-                    getLogs();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        thread.start();
     }
 
 
@@ -49,8 +40,8 @@ public class ConnexionManager {
 
         }
     }
-    public void getLogs() throws IOException {
-        FileOutputStream fos = new FileOutputStream("logs.txt");
-        fos.write(in.readUTF().getBytes());
+
+    public BufferedReader getIn() {
+        return in;
     }
 }

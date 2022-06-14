@@ -25,6 +25,15 @@ public class MainGui extends Application {
         primaryStage.show();
 
         System.out.println(primaryStage.getScene().getRoot());
+
+        stage.setOnCloseRequest((arg) -> {
+            try {
+                stop();
+                System.exit(0);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public static void main(String[] args) {
