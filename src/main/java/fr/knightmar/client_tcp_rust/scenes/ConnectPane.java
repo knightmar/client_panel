@@ -30,7 +30,7 @@ public class ConnectPane extends BorderPane {
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
         ip.setPromptText("IP");
-        ip.setText("192.168.57.129");
+        ip.setText("192.168.10.20");
         ip.setAlignment(CENTER);
         ip.setMaxWidth(width / 3.0);
 

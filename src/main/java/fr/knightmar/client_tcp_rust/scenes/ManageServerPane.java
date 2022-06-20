@@ -2,6 +2,7 @@ package fr.knightmar.client_tcp_rust.scenes;
 
 import fr.knightmar.client_tcp_rust.connexion.ConnexionManager;
 import fr.knightmar.client_tcp_rust.utils.ConnexionManagerInstanceSaver;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -29,7 +30,7 @@ public class ManageServerPane extends BorderPane {
     public ManageServerPane(int width, int height) throws IOException, InterruptedException {
         Text title = new Text("Manage the server");
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
-        logs = new TextArea();
+        logs = new TextArea("");
 
         logs.setEditable(false);
         logs.setWrapText(true);
@@ -49,6 +50,20 @@ public class ManageServerPane extends BorderPane {
         buttons.setAlignment(CENTER);
         this.setLeft(buttons);
 
+        launch_server_button.setOnAction(event -> {
+            Thread thread = new Thread(() -> {
+                try {
+                    System.out.println("Starting server...");
+                    ConnexionManager connexionManager = ConnexionManagerInstanceSaver.getConnexionManager();
+                    connexionManager.sendMessage("start");
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            thread.start();
+        });
+
 
         HBox commands = new HBox();
         TextField command = new TextField();
@@ -58,13 +73,21 @@ public class ManageServerPane extends BorderPane {
         commands.getChildren().addAll(command, send_command);
 
         VBox vbox = new VBox();
-        VBox.setMargin(title, new Insets(0, 0, 10, 0));
+        VBox.setMargin(title, new
+
+                Insets(0, 0, 10, 0));
         vbox.setMaxWidth((int) ((width / 7.0) * 1));
         vbox.setAlignment(CENTER);
-        vbox.getChildren().addAll(title, logs, commands);
-        this.setCenter(vbox);
+        vbox.getChildren().
 
-        send_command.setOnAction(event -> {
+                addAll(title, logs, commands);
+        this.
+
+                setCenter(vbox);
+
+        send_command.setOnAction(event ->
+
+        {
             System.out.println("button");
             Thread thread = new Thread(() -> {
                 try {
@@ -92,12 +115,13 @@ public class ManageServerPane extends BorderPane {
                 try {
                     BufferedReader reader = ConnexionManagerInstanceSaver.getConnexionManager().getIn();
                     String line = reader.readLine();
+                    reader.readLine();
                     if (!Objects.equals(line, previous_line)) {
                         previous_line = line;
-                        logs.appendText(previous_line + "\n");
-                        logs.end();
-                    } else {
-                        System.out.println("nop");
+                        Platform.runLater(()->{
+                            logs.appendText(line+"\n");
+                            logs.end();
+                        });
                     }
 
 
